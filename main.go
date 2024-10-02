@@ -29,6 +29,14 @@ type Post struct {
 	Comments    []Comment `json:"comments"`
 }
 
+func Handler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		getAllPostsHandler(w, r)
+		return
+	}
+	http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+}
+
 func getAllPosts(db *sql.DB) ([]Post, error) {
 	query := `
 		SELECT
@@ -67,7 +75,7 @@ func getAllPosts(db *sql.DB) ([]Post, error) {
 			likeCount           int
 			commentID           sql.NullInt64
 			commentUserID       sql.NullInt64
-			commentUsername      sql.NullString
+			commentUsername     sql.NullString
 			comment             sql.NullString
 			commentCreatedAt    sql.NullString
 		)
@@ -108,7 +116,6 @@ func getAllPosts(db *sql.DB) ([]Post, error) {
 }
 
 func getAllPostsHandler(w http.ResponseWriter, r *http.Request) {
-	// Carregar as variáveis de ambiente
 	if err := godotenv.Load(); err != nil {
 		http.Error(w, "Error loading .env file", http.StatusInternalServerError)
 		return
@@ -128,7 +135,6 @@ func getAllPostsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	// Testar a conexão
 	if err := db.Ping(); err != nil {
 		http.Error(w, "Error connecting to database: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -144,8 +150,7 @@ func getAllPostsHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(posts)
 }
 
-
 func main() {
-	http.HandleFunc("/posts", getAllPostsHandler)
+	http.HandleFunc("/posts", Handler)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
