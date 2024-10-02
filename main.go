@@ -29,7 +29,7 @@ type Post struct {
 	Comments    []Comment `json:"comments"`
 }
 
-func Handler(w http.ResponseWriter, r *http.Request) {
+func HandleRequest(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		getAllPostsHandler(w, r)
 		return
@@ -151,6 +151,6 @@ func getAllPostsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/posts", Handler)
+	http.HandleFunc("/posts", HandleRequest)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
