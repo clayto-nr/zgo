@@ -1,0 +1,23 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "main.go",
+        "use": "@vercel/go"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/posts(?:/(.*))?",
+        "dest": "main.go"
+      }
+    ],
+    "env": {
+      "DB_USER": "@db_user",
+      "DB_PASSWORD": "@db_password",
+      "DB_HOST": "@db_host",
+      "DB_PORT": "@db_port",
+      "DB_DATABASE": "@db_database"
+    }
+  }
+  
